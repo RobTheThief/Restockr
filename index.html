@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html>
+<title>W3.CSS Template</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Raleway">
+<style>
+body,h1 {font-family: "Raleway", sans-serif}
+body, html {height: 100%}
+.bgimg {
+  background-image: url('https://www.w3schools.com/w3images/forestbridge.jpg');
+  min-height: 100%;
+  background-position: center;
+  background-size: cover;
+}
+</style>
+<body>
+
+<div class="bgimg w3-display-container w3-animate-opacity w3-text-white">
+  <div class="w3-display-topleft w3-padding-large w3-xlarge">
+    Logo
+  </div>
+  <div class="w3-display-middle">
+    <h1 class="w3-jumbo w3-animate-top">COMING SOON</h1>
+    <hr class="w3-border-grey" style="margin:auto;width:40%">
+    <h1 id='inputElement'>The input element</h1>
+
+    <form onsubmit=makeLineItemList()>
+        <label for="fname">First name:</label>
+        <input type="text" id="fname" name="fname"><br><br>
+        <label for="lname">Last name:</label>
+        <input type="text" id="lname" name="lname"><br><br>
+    </form>
+    <button onClick =makeLineItemList()>SUBMIT</button>
+    <p id='outputElement'>stuff \n poop</p>
+  </div>
+  <div class="w3-display-bottomleft w3-padding-large">
+    Powered by <a href="https://www.w3schools.com/w3css/default.asp" target="_blank">w3.css</a>
+  </div>
+</div>
+
+</body>
+
+</html>
+
+    <script src="./token.js"></script>
+    <script src="./apiRequests.js"></script>
+    <script>
+
+    let estimateIDs = [];
+    let dateFrom = '2021-05-23';
+    let dateTo = '2021-05-30';
+
+    const readDate = (estimate) => {
+      const date = estimate.created_at;
+      const dateArray = date.split("");
+      const parsedDate = dateArray.filter(arrPosition);
+      console.log(parsedDate.join(''));
+      if (parsedDate.join('') == dateTo) {
+        return true;
+      }else {
+        return false;
+      }
+    }
+
+    const arrPosition = (value, index) => {
+      if (index <= 9) {
+          return value;
+      }
+    }
+
+    const getIDs = (estimates) => {
+      const getMatch = (item) => {
+        if (item.location_id === 2356 && readDate(item) ){
+          estimateIDs.push(item.id);
+        }
+      }
+      estimates.estimates.forEach(getMatch);
+      return estimateIDs;
+    }
+    
+    const makeEstimateIdList = () => {
+      return new Promise ( resolve => {
+        const estimateIdList = getPage1Estimates().then(estimates => getIDs(estimates));
+        console.log(estimateIdList);
+        resolve(estimateIdList);
+      })
+    };
+      
+    const makeLineItemList = async () => {
+      estimateIDs = [];
+      const items = makeEstimateIdList().then(idList => getAllLineItems(idList)).then((items) => {
+        return items;
+      });
+      
+      const retreval = await items;
+      console.log(retreval);
+    }  
+
+    /* const input = `${document.getElementById("fname").value} ${document.getElementById("lname").value}` 
+      console.log(input); */
+    //console.log(allEstimates.estimates[0]);
+      
+  </script> 
+
+
