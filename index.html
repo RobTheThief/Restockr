@@ -21,6 +21,105 @@ body, html {height: 100%}
   overflow-y: scroll;
 }
 
+#submit_loader_container {
+  display: inline-block;
+  height: 50px;
+  position: relative;
+}
+
+.pswp__preloader__icn {
+  display:inline-block;
+  margin: 0;
+  position: absolute;
+  top: 7%;
+  left: 80px;
+  opacity:0.75;
+  width: 20px;
+  height: 20px;
+  -webkit-animation: clockwise 500ms linear infinite;
+  animation: clockwise 500ms linear infinite;
+}
+
+/* The idea of animating inner circle is based on Polymer loading indicator by Keanu Lee https://blog.keanulee.com/2014/10/20/the-tale-of-three-spinners.html */
+.pswp__preloader__cut {
+  position: relative;
+  width: 10px;
+  height: 20px;
+  overflow: hidden;
+  
+    position: absolute;
+  top: 0;
+  left: 0;
+}
+
+.pswp__preloader__donut--fake {
+   box-sizing: border-box;
+
+  width: 14px;
+	height: 14px;
+	
+  
+  border: 2px solid red;
+   border-radius: 50%;
+  position: absolute;
+  top: 0;
+  left: 0;
+  
+	background: none;
+	margin:0;
+}
+
+.pswp__preloader__donut {
+  box-sizing: border-box;
+
+  width: 20px;
+	height: 20px;
+	
+  
+  border: 2px solid #FFF;
+   border-radius: 50%;
+  border-left-color: transparent;
+  border-bottom-color: transparent;
+  
+    position: absolute;
+  top: 0;
+  left: 0;
+ 
+  
+  
+	position: absolute;
+  top: 0;
+  left: 0;
+  
+	background: none;
+	margin:0;
+  
+    -webkit-animation: donut-rotate 1000ms cubic-bezier(.4,0,.22,1) infinite;
+  animation: donut-rotate 1000ms cubic-bezier(.4,0,.22,1) infinite;
+
+}
+
+
+@-webkit-keyframes clockwise {
+  0% { -webkit-transform: rotate(0deg) }
+  100% { -webkit-transform: rotate(360deg) }
+}
+@keyframes clockwise {
+  0% { transform: rotate(0deg) }
+  100% { transform: rotate(360deg) }
+}
+@-webkit-keyframes donut-rotate {
+  0% { -webkit-transform: rotate(0) }
+  50% { -webkit-transform: rotate(-140deg) }
+  100% { -webkit-transform: rotate(0) }
+}
+@keyframes donut-rotate {
+  0% { transform: rotate(0) }
+  50% { transform: rotate(-140deg) }
+  100% { transform: rotate(0) }
+}
+
+
 </style>
 <body>
 
@@ -34,12 +133,19 @@ body, html {height: 100%}
     <h1 id='inputElement'>The input element</h1>
 
     <form onsubmit=makeLineItemList()>
-        <label for="fname">First name:</label>
-        <input type="text" id="fname" name="fname"><br><br>
-        <label for="lname">Last name:</label>
-        <input type="text" id="lname" name="lname"><br><br>
+        <label for="From">From:</label>
+        <input type="date" id="dateFromInput" name="fname"><br><br>
+        <label for="lname">To:<span style="opacity: 0;">__.</span></label>
+        <input type="date" id="dateToInput" name="lname"><br><br>
     </form>
-    <button onClick =makeLineItemList()>SUBMIT</button>
+    <div id="submit_loader_container">
+      <button onClick =makeLineItemList()>SUBMIT</button>
+      <div class="pswp__preloader__icn">
+        <div class="pswp__preloader__cut">
+          <div id="loader_donut" class=""></div>
+        </div>
+      </div>
+    </div>  
     <p id='outputElement'></p>
   </div>
   <div class="w3-display-bottomleft w3-padding-large">
@@ -53,43 +159,13 @@ body, html {height: 100%}
 
     <script src="./token.js"></script>
     <script src="./apiRequests.js"></script>
+    <script src="./helpers.js"></script>
     <script>
 
     var estimateIDs = [];
-    var dateFrom = Date.now() - 1209600000; //1 week ago 604800000 // 2 week ago 1209600000
+    var dateFrom = Date.now() - 86400000; // 1 day ago 86400000//1 week ago 604800000 // 2 week ago 1209600000
     var dateTo = Date.now();
     var storeID = 2356;
-
-    const isInDate = (estimate) => {
-      const estimateDate = Date.parse(estimate.created_at);
-      if (estimateDate <= dateTo && estimateDate >= dateFrom) {
-        return true;
-      }else {
-        return false;
-      }
-    }
-
-    const getIDs = async (estimates) => {
-      let estimatesArr = estimates.estimates;
-      const getMatch = (item) => {
-        if (item.location_id === storeID && isInDate(item) ){
-          estimateIDs.push(item.id);
-        }
-      }
-
-      let lastEstimateOnPageDate = Date.parse(estimatesArr[estimatesArr.length - 1].created_at);
-      let count = 2;
-
-      while (lastEstimateOnPageDate <= dateTo && lastEstimateOnPageDate >= dateFrom){
-        const nextPage = await getGivenPageEstimates(count);
-        estimatesArr = estimatesArr.concat(nextPage.estimates);
-        lastEstimateOnPageDate = Date.parse(nextPage.estimates[nextPage.estimates.length - 1].created_at);
-        count++;
-      }
-      
-      estimatesArr.forEach(getMatch);
-      return estimateIDs;
-    }
     
     const makeEstimateIdList = () => {
       return new Promise (async resolve => {
@@ -98,7 +174,7 @@ body, html {height: 100%}
       })
     };
       
-    const getLineItems = async () => {
+    const getLineItemNames = async () => {
       const estimateIdList = await makeEstimateIdList();
       const estimateLineItems = estimateIdList.map( id => getLineItemsFromEstimate(id));
       let lineItemsList = [];
@@ -107,22 +183,42 @@ body, html {height: 100%}
         for (let i = 0; i < lineItems.length; i++) {
           lineItemsList.push(lineItems[i].item);
         }
-      }
-      const merged = [].concat(lineItemsList);
-      return merged;
+      }      
+      return lineItemsList;
     }
 
     const makeLineItemList = async () => {
+      fetching();
       estimateIDs = [];
+      const dateFromInput = document.getElementById("dateFromInput").value;
+      const dateToInput = document.getElementById("dateToInput").value;
+
+      if (dateFromInput && dateToInput) {
+        dateTo = Date.parse(dateToInput);
+        dateFrom = Date.parse(dateFromInput);
+      }
 
       const printStuff = async () => {
-        const result = await getLineItems();
-        result.forEach(item => {
+        const result = await getLineItemNames();
+        console.log(await getProductDetailList(result));
+        /* result.forEach(item => {
           document.getElementById("outputElement").innerHTML += `${item}<br>`;
-        })
-        
+        }) */
+        fetching();
       };
       printStuff();
+    }
+
+    const getProductDetailList = async (lineItemNames) => {
+      let productDetailList = [];
+      await lineItemNames.forEach(async item => {
+          const result = await getProductDetail(item);
+          result.products.forEach(item => {
+            productDetailList.push(item);
+            console.log('push')
+          })
+        })       
+        return productDetailList;
     }
       
   </script> 
