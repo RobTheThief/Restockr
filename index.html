@@ -56,36 +56,38 @@ body, html {height: 100%}
     <script>
 
     var estimateIDs = [];
-    var dateFrom = '2021-05-30';
-    var dateTo = '2021-06-05';
+    var dateFrom = Date.now() - 1209600000; //1 week ago 604800000 // 2 week ago 1209600000
+    var dateTo = Date.now();
     var storeID = 2356;
-    var lineItems = [];
 
     const isInDate = (estimate) => {
-      const date = estimate.created_at;
-      const dateArray = date.split("");
-      const parsedDate = Date.parse(dateArray.filter(arrPosition).join(''));
-      console.log(date, parsedDate);
-      if (parsedDate <= Date.parse(dateTo) && parsedDate >= Date.parse(dateFrom)) {
+      const estimateDate = Date.parse(estimate.created_at);
+      if (estimateDate <= dateTo && estimateDate >= dateFrom) {
         return true;
       }else {
         return false;
       }
     }
 
-    const arrPosition = (value, index) => {
-      if (index <= 9) {
-          return value;
-      }
-    }
-
-    const getIDs = (estimates) => {
+    const getIDs = async (estimates) => {
+      let estimatesArr = estimates.estimates;
       const getMatch = (item) => {
         if (item.location_id === storeID && isInDate(item) ){
           estimateIDs.push(item.id);
         }
       }
-      estimates.estimates.forEach(getMatch);
+
+      let lastEstimateOnPageDate = Date.parse(estimatesArr[estimatesArr.length - 1].created_at);
+      let count = 2;
+
+      while (lastEstimateOnPageDate <= dateTo && lastEstimateOnPageDate >= dateFrom){
+        const nextPage = await getGivenPageEstimates(count);
+        estimatesArr = estimatesArr.concat(nextPage.estimates);
+        lastEstimateOnPageDate = Date.parse(nextPage.estimates[nextPage.estimates.length - 1].created_at);
+        count++;
+      }
+      
+      estimatesArr.forEach(getMatch);
       return estimateIDs;
     }
     
