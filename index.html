@@ -14,6 +14,13 @@ body, html {height: 100%}
   background-position: center;
   background-size: cover;
 }
+
+#outputElement {
+  max-height: 200px;
+  width: 50%;
+  overflow-y: scroll;
+}
+
 </style>
 <body>
 
@@ -33,7 +40,7 @@ body, html {height: 100%}
         <input type="text" id="lname" name="lname"><br><br>
     </form>
     <button onClick =makeLineItemList()>SUBMIT</button>
-    <p id='outputElement'>stuff \n poop</p>
+    <p id='outputElement'></p>
   </div>
   <div class="w3-display-bottomleft w3-padding-large">
     Powered by <a href="https://www.w3schools.com/w3css/default.asp" target="_blank">w3.css</a>
@@ -48,16 +55,18 @@ body, html {height: 100%}
     <script src="./apiRequests.js"></script>
     <script>
 
-    let estimateIDs = [];
-    let dateFrom = '2021-05-23';
-    let dateTo = '2021-05-30';
+    var estimateIDs = [];
+    var dateFrom = '2021-05-30';
+    var dateTo = '2021-06-05';
+    var storeID = 2356;
+    var lineItems = [];
 
-    const readDate = (estimate) => {
+    const isInDate = (estimate) => {
       const date = estimate.created_at;
       const dateArray = date.split("");
-      const parsedDate = dateArray.filter(arrPosition);
-      console.log(parsedDate.join(''));
-      if (parsedDate.join('') == dateTo) {
+      const parsedDate = Date.parse(dateArray.filter(arrPosition).join(''));
+      console.log(date, parsedDate);
+      if (parsedDate <= Date.parse(dateTo) && parsedDate >= Date.parse(dateFrom)) {
         return true;
       }else {
         return false;
@@ -72,7 +81,7 @@ body, html {height: 100%}
 
     const getIDs = (estimates) => {
       const getMatch = (item) => {
-        if (item.location_id === 2356 && readDate(item) ){
+        if (item.location_id === storeID && isInDate(item) ){
           estimateIDs.push(item.id);
         }
       }
@@ -81,26 +90,38 @@ body, html {height: 100%}
     }
     
     const makeEstimateIdList = () => {
-      return new Promise ( resolve => {
-        const estimateIdList = getPage1Estimates().then(estimates => getIDs(estimates));
-        console.log(estimateIdList);
+      return new Promise (async resolve => {
+        const estimateIdList = await getPage1Estimates().then(estimates => getIDs(estimates));
         resolve(estimateIdList);
       })
     };
       
+    const getLineItems = async () => {
+      const estimateIdList = await makeEstimateIdList();
+      const estimateLineItems = estimateIdList.map( id => getLineItemsFromEstimate(id));
+      let lineItemsList = [];
+      for (let i = 0; i < estimateLineItems.length; i++) {
+        let lineItems = await estimateLineItems[i];
+        for (let i = 0; i < lineItems.length; i++) {
+          lineItemsList.push(lineItems[i].item);
+        }
+      }
+      const merged = [].concat(lineItemsList);
+      return merged;
+    }
+
     const makeLineItemList = async () => {
       estimateIDs = [];
-      const items = makeEstimateIdList().then(idList => getAllLineItems(idList)).then((items) => {
-        return items;
-      });
-      
-      const retreval = await items;
-      console.log(retreval);
-    }  
 
-    /* const input = `${document.getElementById("fname").value} ${document.getElementById("lname").value}` 
-      console.log(input); */
-    //console.log(allEstimates.estimates[0]);
+      const printStuff = async () => {
+        const result = await getLineItems();
+        result.forEach(item => {
+          document.getElementById("outputElement").innerHTML += `${item}<br>`;
+        })
+        
+      };
+      printStuff();
+    }
       
   </script> 
 

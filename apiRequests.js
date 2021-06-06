@@ -1,10 +1,10 @@
 const queryString = 'https://pair.repairshopr.com/api/v1/estimates';
 var numOfEstimatePages;
 
-const getLineItemsFromEstimate = (item) => {
+const getLineItemsFromEstimate = (ID) => {
     return new Promise ( async resolve => {
       try {
-        const response = await fetch(queryString + '/' + item, {
+        const response = await fetch(queryString + '/' + ID, {
           method: 'GET',
           headers: {
             'Content-Type': 'application/json',
@@ -20,17 +20,7 @@ const getLineItemsFromEstimate = (item) => {
         }
     })
   };
-
-  const getAllLineItems = (items) => {
-    return new Promise ( resolve => {
-    var lineItems = [];
-      items.forEach( item => {
-        lineItems.push( getLineItemsFromEstimate(item))
-      })
-      resolve(lineItems);
-    })
-  };
-
+  
 const getPage1Estimates = () => {
     return new Promise ( async resolve => {
       try {
@@ -43,8 +33,6 @@ const getPage1Estimates = () => {
       });   
 
       const responseJson = await response.json(); //extract JSON from the http response
-      
-      //console.log(responseJson.meta.total_pages);
 
       numOfEstimatePages = responseJson.meta.total_pages;
 
@@ -55,27 +43,3 @@ const getPage1Estimates = () => {
         }
     })
 };
-
-const getEstimateNumOfPages = () => {
-    return new Promise ( async resolve => {
-        try {
-          const response = await fetch(queryString, {
-            method: 'GET',
-            headers: {
-              'Content-Type': 'application/json',
-              'Authorization':  token
-          }
-        });   
-  
-        const responseJson = await response.json(); //extract JSON from the http response
-        const EstimateNumOfPages = responseJson.meta.total_pages
-        
-        console.log(EstimateNumOfPages);
-  
-        resolve(EstimateNumOfPages); 
-          } catch (error) {
-           console.log(error);
-           resolve();   
-          }
-      })
-}
