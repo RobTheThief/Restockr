@@ -174,17 +174,29 @@ body, html {height: 100%}
       })
     };
       
-    const getLineItemNames = async () => {
+    const getLineItemIds = async () => {
       const estimateIdList = await makeEstimateIdList();
       const estimateLineItems = estimateIdList.map( id => getLineItemsFromEstimate(id));
-      let lineItemsList = [];
+      let lineItemIdList = [];
       for (let i = 0; i < estimateLineItems.length; i++) {
         let lineItems = await estimateLineItems[i];
         for (let i = 0; i < lineItems.length; i++) {
-          lineItemsList.push(lineItems[i].item);
+          lineItemIdList.push(lineItems[i].product_id);
+
         }
       }      
-      return lineItemsList;
+      return lineItemIdList;
+    }
+
+    const getProductDetailList = async (lineItemIds) => {
+      let productDetailList = [];
+      await lineItemIds.forEach(async item => {
+          const result = await getProductDetail(item);
+          console.log(result);
+          productDetailList.push(result);
+        })       
+        console.log(productDetailList);
+        return productDetailList;
     }
 
     const makeLineItemList = async () => {
@@ -199,8 +211,8 @@ body, html {height: 100%}
       }
 
       const printStuff = async () => {
-        const result = await getLineItemNames();
-        console.log(await getProductDetailList(result));
+        const lineItemIds = await getLineItemIds();
+        const productDetailList = await getProductDetailList(lineItemIds);
         /* result.forEach(item => {
           document.getElementById("outputElement").innerHTML += `${item}<br>`;
         }) */
@@ -208,19 +220,6 @@ body, html {height: 100%}
       };
       printStuff();
     }
-
-    const getProductDetailList = async (lineItemNames) => {
-      let productDetailList = [];
-      await lineItemNames.forEach(async item => {
-          const result = await getProductDetail(item);
-          result.products.forEach(item => {
-            productDetailList.push(item);
-            console.log('push')
-          })
-        })       
-        return productDetailList;
-    }
-      
   </script> 
 
 
