@@ -33,5 +33,6 @@ const getIDs = async (estimates) => {
     return estimateIDs;
 }
 
-
-/* const merged = [].concat.apply([], lineItemsList);
+const detailExpand = (num) => {
+    document.getElementById(`details${num}`).classList.toggle("expand");
+  }

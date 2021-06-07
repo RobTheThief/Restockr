@@ -65,10 +65,10 @@ const getGivenPageEstimates = (pageNum) => {
     })
 };
 
-const getProductDetail = (product) => {
+const getProductDetail = (id) => {
     return new Promise ( async resolve => {
       try {
-        const response = await fetch(queryString + 'products?name=' + product, {
+        const response = await fetch(queryString + 'products/' + id, {
           method: 'GET',
           headers: {
             'Content-Type': 'application/json',
