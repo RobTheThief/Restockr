@@ -55,6 +55,21 @@
     var dateFrom = Date.now() - 86400000; // 1 day ago 86400000//1 week ago 604800000 // 2 week ago 1209600000
     var dateTo = Date.now();
     var storeID = 2356;
+
+    var storeNames = {
+
+      2356: 'Wilton',
+      1605: 'Liffy',
+      88: 'Blanch',
+      87: 'Swords',
+      2355: 'Crescent',
+      510: 'Warehouse',
+      187: 'Dundrum',
+      2357: 'Naas/Mahon/Goldendisc',
+      1338: 'Naas/Mahon/Goldendisc',
+      1810: 'Naas/Mahon/Goldendisc',
+
+    }
     
     const makeEstimateIdList = () => {
       return new Promise (async resolve => {
@@ -101,6 +116,7 @@
       console.log(productDetailList);
 
       const render = async () => {
+        document.getElementById("outputElement").innerHTML = ''; //clears output element
         productDetailList.forEach(item => {
           const store = item.location_quantities.findIndex(item => {
             if (item.location_id == storeID){
@@ -112,7 +128,13 @@
           const quantities = item.location_quantities;
           document.getElementById("outputElement").innerHTML += `${item.name}<br>
             <a href = "#" onclick = detailExpand(${count}) class="quantity_container" id = "details${count}" >
-              Quantity: ${quantities[store].quantity} ${quantities[store].location_id}</a><br>`;
+              Quantity: ${quantities[store].quantity} ${storeNames[quantities[store].location_id]}</a><br>`;
+          quantities.forEach((item, index) => {
+            document.getElementById(`details${count}`).innerHTML += 
+              `<br>Quantity: ${quantities[index].quantity} ${storeNames[quantities[index].location_id] ? 
+                                                             storeNames[quantities[index].location_id] : 
+                                                             quantities[index].location_id}`
+          });
         })
         fetching();
       };

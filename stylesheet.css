@@ -35,14 +35,14 @@ html {
 
 .quantity_container {
   overflow: hidden;
-  width: 200px;
+  width: 300px;
   height: 20px;
   display: block;
   transition: height 0.3s ease;
 }
 
 .quantity_container.expand {
-  height: 200px;
+  height: 250px;
 }
 
 #outputElement {
