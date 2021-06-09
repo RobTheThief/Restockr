@@ -6,6 +6,11 @@ body,
 html {
   height: 100%;
 }
+
+a {
+  text-decoration: none;
+}
+
 .bgimg {
   background-image: url("https://www.w3schools.com/w3images/forestbridge.jpg");
   min-height: 100%;
@@ -33,6 +38,27 @@ html {
   background: #555;
 }
 
+.result_container,
+.other_stores_container,
+.average_container {
+  flex-direction: row;
+  width: 100%;
+}
+
+.result_name,
+.other_stores_name,
+.average_lable {
+  display: inline-block;
+  width: 85%;
+}
+
+.result_quantity,
+.other_stores_quantity,
+.average_quantity {
+  display: inline-block;
+  width: 5%;
+}
+
 .quantity_container {
   overflow: hidden;
   width: 300px;
@@ -42,7 +68,7 @@ html {
 }
 
 .quantity_container.expand {
-  height: 250px;
+  height: 200px;
 }
 
 #outputElement {
@@ -75,7 +101,6 @@ html {
   animation: clockwise 500ms linear infinite;
 }
 
-/* The idea of animating inner circle is based on Polymer loading indicator by Keanu Lee https://blog.keanulee.com/2014/10/20/the-tale-of-three-spinners.html */
 .pswp__preloader__cut {
   position: relative;
   width: 10px;
