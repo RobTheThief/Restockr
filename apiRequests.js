@@ -1,6 +1,7 @@
 const queryString = 'https://pair.repairshopr.com/api/v1/'; 
 var numOfEstimatePages;
 
+//Gets line items from estimate using estimate id
 const getLineItemsFromEstimate = (ID) => {
     return new Promise ( async resolve => {
       try {
@@ -21,6 +22,7 @@ const getLineItemsFromEstimate = (ID) => {
     })
   };
 
+//Gets 1st page of estimates and this also return the number of pages of estimates in meta
 const getPage1Estimates = () => {
     return new Promise ( async resolve => {
       try {
@@ -44,6 +46,7 @@ const getPage1Estimates = () => {
     })
 };
 
+//Gets list of estimates from a given page 
 const getGivenPageEstimates = (pageNum) => {
     return new Promise ( async resolve => {
       try {
@@ -65,6 +68,7 @@ const getGivenPageEstimates = (pageNum) => {
     })
 };
 
+//Gets details of a product using product id
 const getProductDetail = (id) => {
     return new Promise ( async resolve => {
       try {

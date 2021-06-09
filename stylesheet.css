@@ -11,6 +11,27 @@ a {
   text-decoration: none;
 }
 
+form {
+  margin-left: 25px;
+  width:90%"
+}
+
+.logo {
+  margin: auto;
+  display: inline-block;
+  height: 70px;
+  max-width: 110px;
+}
+
+.title {
+  margin: auto;
+  position: absolute;
+  top: 10;
+  display: inline-block;
+  font-size: 40px;
+  font-family: "Raleway", sans-serif;
+}
+
 .bgimg {
   background-image: url("https://www.w3schools.com/w3images/forestbridge.jpg");
   min-height: 100%;
@@ -18,22 +39,18 @@ a {
   background-size: cover;
 }
 
-/* width */
 ::-webkit-scrollbar {
   width: 10px;
 }
 
-/* Track */
 ::-webkit-scrollbar-track {
   background: #8c8c8c;
 }
 
-/* Handle */
 ::-webkit-scrollbar-thumb {
   background: #595959;
 }
 
-/* Handle on hover */
 ::-webkit-scrollbar-thumb:hover {
   background: #555;
 }
@@ -72,7 +89,8 @@ a {
 }
 
 #outputElement {
-  height: 400px;
+  margin-left: 25px;
+  height: 270px;
   width: 500px;
   overflow: hidden;
   transition: overflow 1s ease;
@@ -86,6 +104,8 @@ a {
   display: inline-block;
   height: 50px;
   position: relative;
+  margin-left: 25px;
+  width: 90%;
 }
 
 .pswp__preloader__icn {

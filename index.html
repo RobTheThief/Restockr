@@ -13,13 +13,12 @@
 <body>
 
 <div class="bgimg w3-display-container w3-animate-opacity w3-text-white">
-  <div class="w3-display-topleft w3-padding-large w3-xlarge">
-    Logo
-  </div>
   <div class="w3-display-middle">
-    <h1 class="w3-jumbo w3-animate-top">COMING SOON</h1>
-    <hr class="w3-border-grey" style="margin:auto;width:40%">
-    <h1 id='inputElement'>The input element</h1>
+    <div class = "title_container">
+      <img src = "http://robgannon.com/img/rgLogo.png" class="w3-animate-top logo">
+      <h1 class="w3-animate-top title">Restockr</h1>
+    </div>
+    <hr class="w3-border-grey" style="margin:auto;width:90%"><br>
 
     <form onsubmit=submit()>
         <label for="From">From:</label>
@@ -43,127 +42,98 @@
 
 </html>
 
-    <script src="./token.js"></script>
-    <script src="./apiRequests.js"></script>
-    <script src="./helpers.js"></script>
-    <script>
+<script src="./token.js"></script>
+<script src="./apiRequests.js"></script>
+<script src="./helpers.js"></script>
+<script>
 
-    var estimateIDs = [];
-    var dateFrom = Date.now() - 86400000; // 1 day ago 86400000//1 week ago 604800000 // 2 week ago 1209600000
-    var dateTo = Date.now();
-    var storeID = 2356;
+var estimateIDs = [];
+var dateFrom = Date.now() - 86400000; // 1 day ago 86400000//1 week ago 604800000 // 2 weeks ago 1209600000
+var dateTo = Date.now();
+var storeID = 2356;
 
-    var storeNames = {
+var storeNames = {
 
-      2356: 'WILTON: ',
-      1605: 'LIFFY: ',
-      88: 'BLANCH: ',
-      87: 'SWORDS: ',
-      2355: 'CRESCENT: ',
-      510: 'WAREHOUSE: ',
-      187: 'DUNDRUM: ',
-      2357: 'Naas/Mahon/Goldendisc: ',
-      1338: 'Naas/Mahon/Goldendisc: ',
-      1810: 'Naas/Mahon/Goldendisc: ',
+  2356: 'WILTON: ',
+  1605: 'LIFFY: ',
+  88: 'BLANCH: ',
+  87: 'SWORDS: ',
+  2355: 'CRESCENT: ',
+  510: 'WAREHOUSE: ',
+  187: 'DUNDRUM: ',
+  2357: 'Naas/Mahon/Goldendisc: ',
+  1338: 'Naas/Mahon/Goldendisc: ',
+  1810: 'Naas/Mahon/Goldendisc: ',
 
-    }
+}
+
+const render = async (productDetailList) => {
+    let count = 0;
+    let allStoreQuantitieSum = 0;
+    document.getElementById("outputElement").innerHTML = ''; //clears output element
+
+    productDetailList.forEach(item => {
+      const allStoreQuantities = item.location_quantities;
+      count++;
     
-    const makeEstimateIdList = () => {
-      return new Promise (async resolve => {
-        const estimateIdList = await getPage1Estimates().then(estimates => getIDs(estimates));
-        resolve(estimateIdList);
-      })
-    };
-      
-    const getLineItemIds = async () => {
-      const estimateIdList = await makeEstimateIdList();
-      const estimateLineItems = estimateIdList.map( id => getLineItemsFromEstimate(id));
-      let productIdList = [];
-      for (let i = 0; i < estimateLineItems.length; i++) {
-        let lineItems = await estimateLineItems[i];
-        for (let i = 0; i < lineItems.length; i++) {
-          (lineItems[i].product_id && lineItems[i].cost != '0.0') && productIdList.push(lineItems[i].product_id); //creates product ID list and excludes products that have no id and have a cost of "0.0".
+      document.getElementById("outputElement").innerHTML += 
+        `<div class = "result_container">
+          <div class = "result_name">${item.name}:</div>
+          <div class = "result_quantity">${allStoreQuantities[selectedStoreQuantity(allStoreQuantities)].quantity}</div>
+        </div>
+          <a href = "#" onclick = detailExpand(${count}) class="quantity_container" id = "details${count}" >
+          ALL STORES </a><br>`; // All store quantities
+            
+      allStoreQuantities.forEach((item, index) => {
+        const storeName = storeNames[allStoreQuantities[index].location_id];
+        if (storeName !== 'Naas/Mahon/Goldendisc: '){  //These stores are closed and always have zero quantities
+          if(storeName !== 'WAREHOUSE: '){ //excludes warehouse from sum of store stock levels 
+            allStoreQuantitieSum = allStoreQuantitieSum + allStoreQuantities[index].quantity; //Sums quantities to get average stock level
+          }
+          document.getElementById(`details${count}`).innerHTML += //Store name and quantity
+            `<div class = "other_stores_container">
+              <div class = "other_stores_name">
+                ${storeName ? 
+                  storeName : 
+                  allStoreQuantities[index].location_id}
+              </div>
+              <div class = "other_stores_quantity">
+                ${allStoreQuantities[index].quantity}
+              </div>
+              </div>` 
         }
-      }     
-      productIdList = productIdList.filter(function(item, pos) {return productIdList.indexOf(item) == pos;}); //removes duplicates
-      return productIdList;
-    }
+      });
+      document.getElementById(`details${count}`).innerHTML = 
+        `${document.getElementById(`details${count}`).innerHTML}
+        <div class = "average_container">
+          <div class = "average_lable">
+            STORES AVERAGE(ex. warehouse):
+          </div>
+          <div  class = "average_quantity">
+            ${parseInt(allStoreQuantitieSum / 6)}
+          </div>
+          </div>`;
+      allStoreQuantitieSum = 0;
+    })
+    fetching();
+  };
 
-    const getProductDetailList = async (lineItemIds) => {
-      let productDetailList = [];
-      for (let i = 0; i < lineItemIds.length; i++) {
-        productDetailList.push((await getProductDetail(lineItemIds[i])).product);
-      }
-      return productDetailList;
-    }
+const submit = async () => {
+  fetching();
+  estimateIDs = [];
+  const dateFromInput = document.getElementById("dateFromInput").value;
+  const dateToInput = document.getElementById("dateToInput").value;
 
-    const render = async (productDetailList) => {
-        let count = 0;
-        let allStoreQuantitieSum = 0;
-        document.getElementById("outputElement").innerHTML = ''; //clears output element
+  if (dateFromInput && dateToInput) {
+    dateTo = Date.parse(dateToInput);
+    dateFrom = Date.parse(dateFromInput);
+  }
 
-        productDetailList.forEach(item => {
-          const allStoreQuantities = item.location_quantities;
-          count++;
-        
-          document.getElementById("outputElement").innerHTML += 
-            `<div class = "result_container">
-              <div class = "result_name">${item.name}:</div>
-              <div class = "result_quantity">${allStoreQuantities[selectedStoreQuantity(allStoreQuantities)].quantity}</div>
-            </div>
-              <a href = "#" onclick = detailExpand(${count}) class="quantity_container" id = "details${count}" >
-              ALL STORES </a><br>`; // All store quantities
-                
-          allStoreQuantities.forEach((item, index) => {
-            const storeName = storeNames[allStoreQuantities[index].location_id];
-            if (storeName !== 'Naas/Mahon/Goldendisc: '){  //These stores are closed and always have zero quantities
-              if(storeName !== 'WAREHOUSE: '){ //excludes warehouse from sum of store stock levels 
-                allStoreQuantitieSum = allStoreQuantitieSum + allStoreQuantities[index].quantity; //Sums quantities to get average stock level
-              }
-              document.getElementById(`details${count}`).innerHTML += //Store name and quantity
-                `<div class = "other_stores_container">
-                  <div class = "other_stores_name">
-                    ${storeName ? 
-                      storeName : 
-                      allStoreQuantities[index].location_id}
-                  </div>
-                  <div class = "other_stores_quantity">
-                    ${allStoreQuantities[index].quantity}
-                  </div>
-                 </div>` 
-            }
-          });
-          document.getElementById(`details${count}`).innerHTML = 
-            `${document.getElementById(`details${count}`).innerHTML}
-            <div class = "average_container">
-              <div class = "average_lable">
-                STORES AVERAGE(ex. warehouse):
-              </div>
-              <div  class = "average_quantity">
-                ${parseInt(allStoreQuantitieSum / 6)}
-              </div>
-             </div>`;
-          allStoreQuantitieSum = 0;
-        })
-        fetching();
-      };
+  const lineItemIds = await getLineItemIds();
+  const productDetailList = await getProductDetailList(lineItemIds);
 
-    const submit = async () => {
-      fetching();
-      estimateIDs = [];
-      const dateFromInput = document.getElementById("dateFromInput").value;
-      const dateToInput = document.getElementById("dateToInput").value;
-
-      if (dateFromInput && dateToInput) {
-        dateTo = Date.parse(dateToInput);
-        dateFrom = Date.parse(dateFromInput);
-      }
-
-      const lineItemIds = await getLineItemIds();
-      const productDetailList = await getProductDetailList(lineItemIds);
-
-      render(productDetailList);
-    }
-  </script> 
+  render(productDetailList);
+}
+</script> 
 
 
