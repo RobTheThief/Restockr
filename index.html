@@ -97,15 +97,13 @@ const render = async (productDetailList) => {
       allStoreQuantities.forEach((item, index) => {
         const storeName = storeNames[allStoreQuantities[index].location_id];
         if (storeName !== 'Naas/Mahon/Goldendisc'){  //These stores are closed and always have zero quantities
-          if(storeName !== 'WAREHOUSE '){ //excludes warehouse from sum of store stock levels 
+          if(storeName !== 'WAREHOUSE'){ //excludes warehouse from sum of store stock levels 
             allStoreQuantitieSum = allStoreQuantitieSum + allStoreQuantities[index].quantity; //Sums quantities to get average stock level
           }
           document.getElementById(`details${count}`).innerHTML += //Store name and quantity
             `<div class = "other_stores_container">
               <div class = "other_stores_name">
-                ${storeName ? 
-                  storeName : 
-                  allStoreQuantities[index].location_id}
+                ${storeName ? storeName : allStoreQuantities[index].location_id}
               </div>
               <div class = "other_stores_quantity">
                 ${allStoreQuantities[index].quantity}
@@ -134,8 +132,9 @@ const submit = async () => {
   
     estimateIDs = [];
   
-    const theStore = document.getElementById("stores").value;
-    console.log(storeNames[theStore]);
+    //const theStore = 
+    storeID = parseInt(document.getElementById("stores").value);
+    console.log(storeID);
     
     const dateFromInput = document.getElementById("dateFromInput").value;
     const dateToInput = document.getElementById("dateToInput").value;
