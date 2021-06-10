@@ -23,7 +23,7 @@ const getEstimateIDs = async (estimates) => {
     let estimatesArr = estimates.estimates;
     let lastEstimateOnPage = estimatesArr[estimatesArr.length - 1];
 
-    while (isInDate(lastEstimateOnPage) || Date.parse(lastEstimateOnPage.created_at) > dateTo ){///////////////////////////
+    while (isInDate(lastEstimateOnPage) || Date.parse(lastEstimateOnPage.created_at) > dateTo ){
         const nextPage = await getGivenPageEstimates(count);
         estimatesArr = estimatesArr.concat(await nextPage.estimates);
         lastEstimateOnPage = await nextPage.estimates[await nextPage.estimates.length - 1];
@@ -62,7 +62,7 @@ const getLineItemIds = async () => {
     const estimateIdList = await makeEstimateIdList();
     const estimateLineItems = estimateIdList.map( id => getLineItemsFromEstimate(id));
     let productIdList = [];
-    
+
     for (let i = 0; i < estimateLineItems.length; i++) {
         let lineItems = await estimateLineItems[i];
         for (let i = 0; i < lineItems.length; i++) {

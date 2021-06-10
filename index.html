@@ -19,32 +19,42 @@
       <h1 class="w3-animate-top title">Restockr</h1>
     </div>
     <hr class="w3-border-grey" style="margin:auto;width:90%"><br>
-
-    <form onsubmit=submit()>
-        <label for="From">From:</label>
-        <input type="date" id="dateFromInput" name="fname"><br><br>
-        <label for="lname">To:<span style="opacity: 0;">__.</span></label>
-        <input type="date" id="dateToInput" name="lname">
-        <div for="">**Default is last 7 days</div><br>
-        <label for="cars">Choose a store:</label>
-        <select name="stores" id="stores">
-          <option value="2356">WILTON</option>
-          <option value="1605">LIFFY</option>
-          <option value="88">BLANCH</option>
-          <option value="87">SWORDS</option>
-          <option value="2355">CRESCENT</option>
-          <option value="187">DUNDRUM</option>
-        </select><br><br>
-    </form>
-    <div id="submit_loader_container">
-      <button onClick =submit()>SUBMIT</button>
-      <div class="pswp__preloader__icn">
-        <div class="pswp__preloader__cut">
-          <div id="loader_donut" class=""></div>
-        </div>
+    <div class = "main_input_container">
+      <div class = "tip_lable_dropdown_container">
+        <form onsubmit=submit()>
+            <div >**Default is last 7 days</div><br>
+    
+            <label class = "dropdown_label" >Choose a store:</label>
+            <select name="stores" id="stores">
+              <option value="2356">WILTON</option>
+              <option value="1605">LIFFY</option>
+              <option value="88">BLANCH</option>
+              <option value="87">SWORDS</option>
+              <option value="2355">CRESCENT</option>
+              <option value="187">DUNDRUM</option>
+            </select><br><br>
+        </form>
+    
+        <div id="submit_loader_container">
+          <button onClick =submit()>SUBMIT</button>
+          <div class="pswp__preloader__icn">
+            <div class="pswp__preloader__cut">
+              <div id="loader_donut" class=""></div>
+            </div>
+          </div>
+        </div> 
       </div>
-    </div>  
-    <p id='outputElement'></p>
+  
+  
+      <form id="date_selector" onsubmit=submit()>
+        <label >From:</label>
+        <input type="date" id="dateFromInput"><br><br>
+        <label >To:<span style="opacity: 0;">__.</span></label>
+        <input type="date" id="dateToInput">
+      </form>    
+    </div>
+
+    <p id='outputElement' class="outputElement"></p>
     <div class = "iconsAdd">Icons made by <a class = "iconsAdd" href="https://www.flaticon.com/authors/catalin-fertu" title="Catalin Fertu">Catalin Fertu</a> from <a class = "iconsAdd" href="https://www.flaticon.com/" title="Flaticon">www.flaticon.com</a></div>
   </div>
 </div>
@@ -81,13 +91,14 @@ var storeNames = {
 const render = async (productDetailList) => {
     let count = 0;
     let allStoreQuantitieSum = 0;
-    document.getElementById("outputElement").innerHTML = ''; //clears output element
+    let outputElement = document.getElementById("outputElement");
+    outputElement.innerHTML = ''; //clears output element
 
     productDetailList.forEach(item => {
       const allStoreQuantities = item.location_quantities;
       count++;
     
-      document.getElementById("outputElement").innerHTML += 
+      outputElement.innerHTML += 
       `<div class = "result_container">
           <a class="copy_container" href="#" onclick=copyText(${count}) >
             <img src = "./img/copy.png" class="copy_icon">
@@ -127,13 +138,15 @@ const render = async (productDetailList) => {
           </div>`;
       allStoreQuantitieSum = 0;
     })
+    outputElement.classList.add('add_scroll');
     fetching();
   };
 
 const submit = async () => {
   if (!isFetching()){
     fetching();
-  
+    outputElement.classList.remove('add_scroll');
+
     estimateIDs = [];
     storeID = parseInt(document.getElementById("stores").value);
     const dateFromInput = document.getElementById("dateFromInput").value;
@@ -144,7 +157,7 @@ const submit = async () => {
     const lineItemIds = await getLineItemIds();
     const productDetailList = await getProductDetailList(lineItemIds);
 
-    render(productDetailList);
+    productDetailList ? render(productDetailList) : fetching();
   }
 }
 </script> 
