@@ -94,7 +94,7 @@ const render = async (productDetailList) => {
             <span id = "tooltip_text_id_${count}" class="tooltiptext">Copy</span>
           </a>
           <div class = "result_name" id = "result_name_id_${count}" >${item.name}</div>
-          <div class = "result_quantity">${allStoreQuantities[selectedStoreQuantity(allStoreQuantities)].quantity}</div>
+          <div class = "result_quantity">${allStoreQuantities[selectedStoreQuantityIndex(allStoreQuantities)].quantity}</div>
         </div>
        <a href = "#" onclick = detailExpand(${count}) class="quantity_container" id = "details${count}" >ALL STORES </a><br>`; // All store quantities
           
@@ -143,7 +143,7 @@ const submit = async () => {
 
     const lineItemIds = await getLineItemIds();
     const productDetailList = await getProductDetailList(lineItemIds);
-    
+
     render(productDetailList);
   }
 }

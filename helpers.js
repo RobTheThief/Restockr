@@ -1,36 +1,28 @@
 //is the estimate between the selected dates
 const isInDate = (estimate) => {
     const estimateDate = Date.parse(estimate.created_at);
-    if (estimateDate <= dateTo && estimateDate >= dateFrom) {
-        return true;
-    }else {
-        return false;
-    }
+    if (estimateDate <= dateTo && estimateDate >= dateFrom) return true;
+    return false;
 }
 
 //Finds index on part quantity array for selected store
-const selectedStoreQuantity = (quantities) => {
+const selectedStoreQuantityIndex = (quantities) => {
     return quantities.findIndex(item => {
-      if (item.location_id == storeID){
-        return true;
-      }
-      return false;
+     return item.location_id == storeID ? true : false;
     });
 } 
 
 //If estimate matches selected parameters then it pushes its id to an array 
 const getMatch = (item) => {
-    if (item.location_id === storeID && isInDate(item) ){
-        estimateIDs.push(item.id);
-    }
+    (item.location_id === storeID && isInDate(item)) && estimateIDs.push(item.id);
 }
 
 //Gets ids from estimates with selected parameters using getMatch()
 const getEstimateIDs = async (estimates) => {
+    let count = 2;
     let estimatesArr = estimates.estimates;
     let lastEstimateOnPage = estimatesArr[estimatesArr.length - 1];
 
-    let count = 2;
     while (isInDate(lastEstimateOnPage) || Date.parse(lastEstimateOnPage.created_at) > dateTo ){///////////////////////////
         const nextPage = await getGivenPageEstimates(count);
         estimatesArr = estimatesArr.concat(await nextPage.estimates);
@@ -70,6 +62,7 @@ const getLineItemIds = async () => {
     const estimateIdList = await makeEstimateIdList();
     const estimateLineItems = estimateIdList.map( id => getLineItemsFromEstimate(id));
     let productIdList = [];
+    
     for (let i = 0; i < estimateLineItems.length; i++) {
         let lineItems = await estimateLineItems[i];
         for (let i = 0; i < lineItems.length; i++) {

@@ -1,5 +1,4 @@
 const queryString = 'https://pair.repairshopr.com/api/v1/'; 
-var numOfEstimatePages;
 
 //Gets line items from estimate using estimate id
 const getLineItemsFromEstimate = (ID) => {
@@ -35,8 +34,6 @@ const getPage1Estimates = () => {
       });   
 
       const responseJson = await response.json(); //extract JSON from the http response
-
-      numOfEstimatePages = responseJson.meta.total_pages;
 
       resolve(responseJson); 
         } catch (error) {
