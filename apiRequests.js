@@ -20,7 +20,7 @@ const getLineItemsFromEstimate = (ID) => {
          resolve();   
         }
     })
-  };
+};
 
 //Gets 1st page of estimates and this also return the number of pages of estimates in meta
 const getPage1Estimates = () => {

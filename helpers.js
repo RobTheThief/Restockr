@@ -16,7 +16,7 @@ const selectedStoreQuantity = (quantities) => {
       }
       return false;
     });
-  } 
+} 
 
 //If estimate matches selected parameters then it pushes its id to an array 
 const getMatch = (item) => {
@@ -52,13 +52,18 @@ const fetching = () => {
     document.getElementById("loader_donut").classList.toggle("pswp__preloader__donut");
 }
 
+//Checks to see if loading icon is active
+const isFetching = () => {
+    return document.getElementById("loader_donut").classList.contains('pswp__preloader__donut');
+}
+
 //Makes a list of Estimates ids
 const makeEstimateIdList = () => {
     return new Promise (async resolve => {
       const estimateIdList = await getPage1Estimates().then(estimates => getIDs(estimates));
       resolve(estimateIdList);
     })
-  };
+};
   
 //Makes a list of estimate line item ids
 const getLineItemIds = async () => {
@@ -83,3 +88,15 @@ const getProductDetailList = async (lineItemIds) => {
     }
     return productDetailList;
 }
+
+//Sets date based on input or defaults to last 7 days if none
+const setDate = (dateFromInput, dateToInput) => {
+    if (dateFromInput && dateToInput) {
+      dateFrom = Date.parse(dateFromInput) - 3599999; // Subtracting almost an hour to bring it to 1ms after midnight
+      dateTo = Date.parse(dateToInput) + 82799999; //Adding 24h - 1ms Hours to bring time to 1ms before midnight on the 'to' date
+    } else {
+      let milliToday = Date.now() % 86400000; //Number of milliseconds so far today
+      dateFrom = Date.now() - 604800000 - milliToday; //1 week ago rounded up to nearest day
+      dateTo = Date.now();
+    }
+} 
