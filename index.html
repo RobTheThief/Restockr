@@ -45,6 +45,7 @@
       </div>
     </div>  
     <p id='outputElement'></p>
+    <div class = "iconsAdd">Icons made by <a class = "iconsAdd" href="https://www.flaticon.com/authors/catalin-fertu" title="Catalin Fertu">Catalin Fertu</a> from <a class = "iconsAdd" href="https://www.flaticon.com/" title="Flaticon">www.flaticon.com</a></div>
   </div>
 </div>
 
@@ -87,13 +88,16 @@ const render = async (productDetailList) => {
       count++;
     
       document.getElementById("outputElement").innerHTML += 
-        `<div class = "result_container">
-          <div class = "result_name">${item.name}</div>
+      `<div class = "result_container">
+          <a class="copy_container" href="#" onclick=copyText(${count}) >
+            <img src = "./img/copy.png" class="copy_icon">
+            <span id = "tooltip_text_id_${count}" class="tooltiptext">Copy</span>
+          </a>
+          <div class = "result_name" id = "result_name_id_${count}" >${item.name}</div>
           <div class = "result_quantity">${allStoreQuantities[selectedStoreQuantity(allStoreQuantities)].quantity}</div>
         </div>
-          <a href = "#" onclick = detailExpand(${count}) class="quantity_container" id = "details${count}" >
-          ALL STORES </a><br>`; // All store quantities
-            
+       <a href = "#" onclick = detailExpand(${count}) class="quantity_container" id = "details${count}" >ALL STORES </a><br>`; // All store quantities
+          
       allStoreQuantities.forEach((item, index) => {
         const storeName = storeNames[allStoreQuantities[index].location_id];
         if (storeName !== 'Naas/Mahon/Goldendisc'){  //These stores are closed and always have zero quantities
@@ -131,18 +135,15 @@ const submit = async () => {
     fetching();
   
     estimateIDs = [];
-  
-    //const theStore = 
     storeID = parseInt(document.getElementById("stores").value);
-    console.log(storeID);
-    
     const dateFromInput = document.getElementById("dateFromInput").value;
     const dateToInput = document.getElementById("dateToInput").value;
+
     setDate(dateFromInput, dateToInput); 
-    
+
     const lineItemIds = await getLineItemIds();
     const productDetailList = await getProductDetailList(lineItemIds);
-  
+    
     render(productDetailList);
   }
 }

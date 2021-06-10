@@ -26,12 +26,12 @@ const getMatch = (item) => {
 }
 
 //Gets ids from estimates with selected parameters using getMatch()
-const getIDs = async (estimates) => {
+const getEstimateIDs = async (estimates) => {
     let estimatesArr = estimates.estimates;
     let lastEstimateOnPage = estimatesArr[estimatesArr.length - 1];
 
     let count = 2;
-    while (isInDate(lastEstimateOnPage)){
+    while (isInDate(lastEstimateOnPage) || Date.parse(lastEstimateOnPage.created_at) > dateTo ){///////////////////////////
         const nextPage = await getGivenPageEstimates(count);
         estimatesArr = estimatesArr.concat(await nextPage.estimates);
         lastEstimateOnPage = await nextPage.estimates[await nextPage.estimates.length - 1];
@@ -60,7 +60,7 @@ const isFetching = () => {
 //Makes a list of Estimates ids
 const makeEstimateIdList = () => {
     return new Promise (async resolve => {
-      const estimateIdList = await getPage1Estimates().then(estimates => getIDs(estimates));
+        const estimateIdList = await getPage1Estimates().then(estimates => getEstimateIDs(estimates));
       resolve(estimateIdList);
     })
 };
@@ -92,11 +92,29 @@ const getProductDetailList = async (lineItemIds) => {
 //Sets date based on input or defaults to last 7 days if none
 const setDate = (dateFromInput, dateToInput) => {
     if (dateFromInput && dateToInput) {
-      dateFrom = Date.parse(dateFromInput) - 3599999; // Subtracting almost an hour to bring it to 1ms after midnight
-      dateTo = Date.parse(dateToInput) + 82799999; //Adding 24h - 1ms Hours to bring time to 1ms before midnight on the 'to' date
+        dateFrom = Date.parse(dateFromInput) - 3599998; // Subtracting almost an hour to bring it to 1ms after midnight
+        dateTo = Date.parse(dateToInput) + 82799999; //Adding almost 23h to bring time to 1ms before midnight on the 'to' date
     } else {
       let milliToday = Date.now() % 86400000; //Number of milliseconds so far today
       dateFrom = Date.now() - 604800000 - milliToday; //1 week ago rounded up to nearest day
       dateTo = Date.now();
     }
 } 
+
+//Copies text of given element
+const copyText = (count) => {
+    let range = document.createRange();
+    let tooltipElement = document.getElementById(`tooltip_text_id_${count}`);
+    var elementToCopy = document.getElementById(`result_name_id_${count}`);
+    range.selectNode(elementToCopy);
+    window.getSelection().removeAllRanges(); // clear current selection
+    window.getSelection().addRange(range); // to select text
+    document.execCommand("copy");
+    window.getSelection().removeAllRanges();// to deselect
+    tooltipElement.innerHTML = 'Copied!';
+    tooltipElement.classList.add('copied');
+    setTimeout(() => {
+        tooltipElement.classList.remove('copied');
+        tooltipElement.innerHTML = 'Copy';
+    }, 1500);
+  }
