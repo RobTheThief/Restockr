@@ -1,8 +1,9 @@
 <!DOCTYPE html>
 <html>
-<title>W3.CSS Template</title>
+<title>Restockr</title>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="icon" href="http://robgannon.com/img/favicon.png" type="image/x-icon">
 <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Raleway">
 <link rel="stylesheet" href="./stylesheet.css">
@@ -15,10 +16,10 @@
 <div class="bgimg w3-display-container w3-animate-opacity w3-text-white">
   <div class="w3-display-middle main_container">
     <div>
+      <h1 class="w3-animate-top title">Restockr</h1>
       <div class = "logo">
         <img src = "http://robgannon.com/img/rgLogo.png" class="w3-animate-top" height="70" width="110">
       </div>
-      <h1 class="w3-animate-top title">Restockr</h1>
     </div>
     <hr class="w3-border-grey title_underline"><br>
     <div class = "main_input_container">
@@ -104,7 +105,7 @@ const render = async (productDetailList) => {
       outputElement.innerHTML += 
       `<div class = "result_container">
           <a class="copy_container" href="#" onclick=copyText(${count}) >
-            <img src = "./img/copy.png" class="copy_icon">
+            <img src = "http://robgannon.com/img/copy.png" class="copy_icon">
             <span id = "tooltip_text_id_${count}" class="tooltiptext">Copy</span>
           </a>
           <div class = "result_name" id = "result_name_id_${count}" >${item.name}</div>
@@ -133,12 +134,12 @@ const render = async (productDetailList) => {
         `${document.getElementById(`details${count}`).innerHTML}
         <div class = "average_container">
           <div class = "average_lable">
-            STORES AVERAGE (ex. warehouse)
+            AVERAGE (exc. warehouse)
           </div>
           <div  class = "average_quantity">
-            ${parseInt(allStoreQuantitieSum / 6)}
+            ${Math.round((allStoreQuantitieSum / 6 ) * 10) / 10}
           </div>
-          </div>`;
+          </div>`; // Gives average rounded to one decimel place
       allStoreQuantitieSum = 0;
     })
     outputElement.classList.add('add_scroll_and_background');

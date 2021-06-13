@@ -16,7 +16,7 @@ const getGivenPageEstimates = (pageNum) => {
 
       resolve(responseJson); 
         } catch (error) {
-         console.log(error);
+         alert(error);
          resolve();   
         }
     })
@@ -37,7 +37,7 @@ const getLineItemsFromEstimate = (ID) => {
       const estimate = await response.json(); //extract JSON from the http response
       resolve(estimate.estimate.line_items); 
         } catch (error) {
-         console.log(error);
+          alert(error);
          resolve();   
         }
     })
@@ -59,7 +59,7 @@ const getPage1Estimates = () => {
 
       resolve(responseJson); 
         } catch (error) {
-         console.log(error);
+          alert(error);
          resolve();   
         }
     })
@@ -82,9 +82,8 @@ const getProductDetail = (id) => {
 
       resolve(responseJson); 
         } catch (error) {
-         console.log(error);
+          alert(error);
          resolve();   
         }
     })
 };
-

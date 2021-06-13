@@ -3,7 +3,7 @@ a {
 }
 
 .bgimg {
-  background-image: url("./img/pexels-sean-whang-804269.jpg");
+  background-image: url("http://robgannon.com/img/pexels-sean-whang-804269.jpg");
   min-height: 100%;
   background-position: center;
   background-size: cover;
@@ -24,7 +24,7 @@ button {
 }
 
 .copy_container {
-  max-width: 5%;
+  max-width: 3%;
   display: inline-block;
 }
 
@@ -90,7 +90,7 @@ input {
   background: rgb(0, 0, 0, 0.5);
   border-radius: 10px;
   padding: 10px;
-  height: 90%;
+  height: 93%;
 }
 
 .main_input_container {
@@ -214,12 +214,14 @@ select {
 .tip_lable_dropdown_container {
   display: inline-block;
   width: 40%;
+  margin-left: 15px;
 }
 
 .title {
-  margin: auto;
-  position: absolute;
-  top: 10;
+  position: relative;
+  top: 10px;
+  margin-left: 35px;
+  width: 77%;
   display: inline-block;
   font-size: 40px;
   font-family: "Raleway", sans-serif;
