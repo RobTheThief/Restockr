@@ -3,7 +3,7 @@ a {
 }
 
 .bgimg {
-  background-image: url("https://www.w3schools.com/w3images/forestbridge.jpg");
+  background-image: url("./img/pexels-sean-whang-804269.jpg");
   min-height: 100%;
   background-position: center;
   background-size: cover;
@@ -13,9 +13,14 @@ body,
 h1 {
   font-family: "Raleway", sans-serif;
 }
+
 body,
 html {
   height: 100%;
+}
+
+button {
+  border-radius: 7px;
 }
 
 .copy_container {
@@ -56,9 +61,13 @@ html {
   width: 100%;
 }
 
+#dateFromInput,
+#dateToInput {
+  max-width: 160px;
+}
+
 .date_selector {
   display: inline-block;
-  width: 30%;
 }
 
 form {
@@ -69,28 +78,41 @@ form {
   font-size: xx-small;
 }
 
+input {
+  border-radius: 7px;
+}
+
 .logo {
-  margin: auto;
   display: inline-block;
-  height: 70px;
-  max-width: 110px;
+}
+
+.main_container {
+  background: rgb(0, 0, 0, 0.5);
+  border-radius: 10px;
+  padding: 10px;
+  height: 90%;
 }
 
 .main_input_container {
   margin-left: 25px;
 }
 
-.outputElement {
-  margin-left: 25px;
-  height: 270px;
-  width: 700px;
-  overflow: hidden;
-  border-width: 5px;
-  border-color: #595959;
+.other_stores_container,
+.average_container {
+  width: 100%;
 }
 
-.w3-display-middle .add_scroll {
+.outputElement {
+  margin: 25px 25px 5px 25px;
+  height: 335px;
+  width: 700px;
+  overflow: hidden;
+}
+
+.w3-display-middle .add_scroll_and_background {
   overflow-y: scroll;
+  background: rgb(0, 0, 0, 0.5);
+  border-radius: 10px;
 }
 
 .pswp__preloader__icn {
@@ -98,6 +120,7 @@ form {
   margin: 0;
   position: relative;
   top: 5px;
+  left: 5px;
   opacity: 0.75;
   width: 20px;
   height: 20px;
@@ -154,15 +177,15 @@ form {
   height: 20px;
   display: block;
   transition: height 0.3s ease;
+  margin-left: 20px;
 }
 
 .quantity_container.expand {
   height: 200px;
 }
 
-.result_container,
-.other_stores_container,
-.average_container {
+.result_container {
+  margin-left: 20px;
   width: 100%;
 }
 
@@ -180,9 +203,12 @@ form {
   width: 5%;
 }
 
+select {
+  border-radius: 7px;
+}
+
 #submit_loader_container {
   display: inline-block;
-  height: 50px;
 }
 
 .tip_lable_dropdown_container {
@@ -199,16 +225,27 @@ form {
   font-family: "Raleway", sans-serif;
 }
 
+.to_label {
+  margin-right: 19px;
+}
+
+.title_underline {
+  margin: auto;
+  width: 90%;
+}
+
 ::-webkit-scrollbar {
   width: 10px;
 }
 
 ::-webkit-scrollbar-track {
   background: #8c8c8c;
+  border-radius: 15px;
 }
 
 ::-webkit-scrollbar-thumb {
   background: #595959;
+  border-radius: 15px;
 }
 
 ::-webkit-scrollbar-thumb:hover {

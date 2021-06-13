@@ -13,12 +13,14 @@
 <body>
 
 <div class="bgimg w3-display-container w3-animate-opacity w3-text-white">
-  <div class="w3-display-middle">
-    <div class = "title_container">
-      <img src = "http://robgannon.com/img/rgLogo.png" class="w3-animate-top logo">
+  <div class="w3-display-middle main_container">
+    <div>
+      <div class = "logo">
+        <img src = "http://robgannon.com/img/rgLogo.png" class="w3-animate-top" height="70" width="110">
+      </div>
       <h1 class="w3-animate-top title">Restockr</h1>
     </div>
-    <hr class="w3-border-grey" style="margin:auto;width:90%"><br>
+    <hr class="w3-border-grey title_underline"><br>
     <div class = "main_input_container">
       <div class = "tip_lable_dropdown_container">
         <form onsubmit=submit()>
@@ -49,15 +51,16 @@
       <form id="date_selector" onsubmit=submit()>
         <label >From:</label>
         <input type="date" id="dateFromInput"><br><br>
-        <label >To:<span style="opacity: 0;">__.</span></label>
+        <label class = 'to_label' >To:</label>
         <input type="date" id="dateToInput">
       </form>    
     </div>
 
     <p id='outputElement' class="outputElement"></p>
-    <div class = "iconsAdd">Icons made by <a class = "iconsAdd" href="https://www.flaticon.com/authors/catalin-fertu" title="Catalin Fertu">Catalin Fertu</a> from <a class = "iconsAdd" href="https://www.flaticon.com/" title="Flaticon">www.flaticon.com</a></div>
   </div>
+  <div class = "iconsAdd">Copy icon made by <a class = "iconsAdd" href="https://www.flaticon.com/authors/catalin-fertu" title="Catalin Fertu">Catalin Fertu</a> from <a class = "iconsAdd" href="https://www.flaticon.com/" title="Flaticon">www.flaticon.com</a></div>
 </div>
+
 
 </body>
 
@@ -93,7 +96,7 @@ const render = async (productDetailList) => {
     let allStoreQuantitieSum = 0;
     let outputElement = document.getElementById("outputElement");
     outputElement.innerHTML = ''; //clears output element
-
+    
     productDetailList.forEach(item => {
       const allStoreQuantities = item.location_quantities;
       count++;
@@ -138,22 +141,19 @@ const render = async (productDetailList) => {
           </div>`;
       allStoreQuantitieSum = 0;
     })
-    outputElement.classList.add('add_scroll');
+    outputElement.classList.add('add_scroll_and_background');
     fetching();
   };
 
 const submit = async () => {
   if (!isFetching()){
-    fetching();
-    outputElement.classList.remove('add_scroll');
-
     estimateIDs = [];
     storeID = parseInt(document.getElementById("stores").value);
     const dateFromInput = document.getElementById("dateFromInput").value;
     const dateToInput = document.getElementById("dateToInput").value;
+    if (setDate(dateFromInput, dateToInput) === 'ERROR: CHECK DATES') return alert('ERROR: CHECK DATES');
 
-    setDate(dateFromInput, dateToInput); 
-
+    fetching();
     const lineItemIds = await getLineItemIds();
     const productDetailList = await getProductDetailList(lineItemIds);
 

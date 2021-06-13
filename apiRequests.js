@@ -1,4 +1,26 @@
-const queryString = 'https://pair.repairshopr.com/api/v1/'; 
+const queryString = 'https://pair.repairshopr.com/api/v1/';
+
+//Gets list of estimates from a given page 
+const getGivenPageEstimates = (pageNum) => {
+    return new Promise ( async resolve => {
+      try {
+        const response = await fetch(queryString + 'estimates?page=' + pageNum, {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization':  token
+        }
+      });   
+
+      const responseJson = await response.json(); //extract JSON from the http response
+
+      resolve(responseJson); 
+        } catch (error) {
+         console.log(error);
+         resolve();   
+        }
+    })
+};
 
 //Gets line items from estimate using estimate id
 const getLineItemsFromEstimate = (ID) => {
@@ -43,27 +65,6 @@ const getPage1Estimates = () => {
     })
 };
 
-//Gets list of estimates from a given page 
-const getGivenPageEstimates = (pageNum) => {
-    return new Promise ( async resolve => {
-      try {
-        const response = await fetch(queryString + 'estimates?page=' + pageNum, {
-          method: 'GET',
-          headers: {
-            'Content-Type': 'application/json',
-            'Authorization':  token
-        }
-      });   
-
-      const responseJson = await response.json(); //extract JSON from the http response
-
-      resolve(responseJson); 
-        } catch (error) {
-         console.log(error);
-         resolve();   
-        }
-    })
-};
 
 //Gets details of a product using product id
 const getProductDetail = (id) => {
