@@ -22,9 +22,10 @@
       </div>
     </div>
     <hr class="w3-border-grey title_underline"><br>
+
     <div class = "main_input_container">
       <div class = "tip_lable_dropdown_container">
-        <form onsubmit=submit()>
+        <form onsubmit=submitRestocker()>
             <div >**Default is last 7 days</div><br>
     
             <label class = "dropdown_label" >Choose a store:</label>
@@ -39,23 +40,60 @@
         </form>
     
         <div id="submit_loader_container">
-          <button onClick =submit()>SUBMIT</button>
+          <button onClick =submitRestocker()>SUBMIT</button>
           <div class="pswp__preloader__icn">
             <div class="pswp__preloader__cut">
-              <div id="loader_donut" class=""></div>
+              <div id="loader_donut_restockr" class=""></div>
             </div>
           </div>
         </div> 
       </div>
   
   
-      <form id="date_selector" onsubmit=submit()>
+      <form id="date_selector" onsubmit=submitRestocker()>
         <label >From:</label>
-        <input type="date" id="dateFromInput"><br><br>
+        <input type="date" id="dateFromInputRestockr"><br><br>
         <label class = 'to_label' >To:</label>
-        <input type="date" id="dateToInput">
+        <input type="date" id="dateToInputRestockr">
       </form>    
     </div>
+
+    <br><hr class="w3-border-grey title_underline">
+
+    <div class = "main_input_container">
+      <div class = "tip_lable_dropdown_container">
+        <form onsubmit=submitCheckInvoices()>
+          <br>
+            <label class = "dropdown_label" >Choose a store:</label>
+            <select name="stores" id="stores">
+              <option value="2356">WILTON</option>
+              <option value="1605">LIFFY</option>
+              <option value="88">BLANCH</option>
+              <option value="87">SWORDS</option>
+              <option value="2355">CRESCENT</option>
+              <option value="187">DUNDRUM</option>
+            </select><br><br>
+        </form>
+    
+        <div id="submit_loader_container">
+          <button onClick =submitCheckInvoices()>SUBMIT</button>
+          <div class="pswp__preloader__icn">
+            <div class="pswp__preloader__cut">
+              <div id="loader_donut_invoices" class=""></div>
+            </div>
+          </div>
+        </div> 
+      </div>
+  
+  
+      <form id="date_selector" onsubmit=submitCheckInvoices()>
+        <label >From:</label>
+        <input type="date" id="dateFromInputCheckInvoice"><br><br>
+        <label class = 'to_label' >To:</label>
+        <input type="date" id="dateToInputCheckInvoice">
+      </form>    
+    </div>
+
 
     <p id='outputElement' class="outputElement"></p>
   </div>
@@ -92,7 +130,7 @@ var storeNames = {
 
 }
 
-const render = async (productDetailList) => {
+const renderRestockr = async (productDetailList) => {
     let count = 0;
     let allStoreQuantitieSum = 0;
     let outputElement = document.getElementById("outputElement");
@@ -143,24 +181,35 @@ const render = async (productDetailList) => {
       allStoreQuantitieSum = 0;
     })
     outputElement.classList.add('add_scroll_and_background');
-    fetching();
+    fetchingRestockr();
   };
-
-const submit = async () => {
-  if (!isFetching()){
+  
+const submitRestocker = async () => {
+  if (!isFetchingRestockr()){
     estimateIDs = [];
     storeID = parseInt(document.getElementById("stores").value);
-    const dateFromInput = document.getElementById("dateFromInput").value;
-    const dateToInput = document.getElementById("dateToInput").value;
+    const dateFromInput = document.getElementById("dateFromInputRestockr").value;
+    const dateToInput = document.getElementById("dateToInputRestockr").value;
     if (setDate(dateFromInput, dateToInput) === 'ERROR: CHECK DATES') return alert('ERROR: CHECK DATES');
 
-    fetching();
+    fetchingRestockr();
     const lineItemIds = await getLineItemIds();
     const productDetailList = await getProductDetailList(lineItemIds);
 
-    productDetailList ? render(productDetailList) : fetching();
+    productDetailList ? renderRestockr(productDetailList) : fetchingRestockr();
   }
 }
+
+const submitCheckInvoices = async () => {
+  if (!isFetchingInvoices()){
+    const dateFromInput = document.getElementById("dateFromInputCheckInvoice").value;
+    const dateToInput = document.getElementById("dateToInputCheckInvoice").value;
+    if (setDate(dateFromInput, dateToInput) === 'ERROR: CHECK DATES') return alert('ERROR: CHECK DATES');
+    fetchingInvoices();
+    console.log(await getPage1Invoices());
+  }
+};
+
 </script> 
 
 

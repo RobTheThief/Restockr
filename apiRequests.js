@@ -87,3 +87,25 @@ const getProductDetail = (id) => {
         }
     })
 };
+
+//Gets 1st page of invoices and this also return the number of pages of invoices in meta
+const getPage1Invoices = () => {
+  return new Promise ( async resolve => {
+    try {
+      const response = await fetch(queryString + 'invoices', {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization':  token
+      }
+    });   
+
+    const responseJson = await response.json(); //extract JSON from the http response
+
+    resolve(responseJson); 
+      } catch (error) {
+        alert(error);
+       resolve();   
+      }
+  })
+};

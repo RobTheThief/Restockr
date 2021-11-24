@@ -21,9 +21,14 @@ const detailExpand = (num) => {
     document.getElementById(`details${num}`).classList.toggle("expand");
 }
 
-//Toggles loading icon
-const fetching = () => {
-    document.getElementById("loader_donut").classList.toggle("pswp__preloader__donut");
+//Toggles loading icon for restockr
+const fetchingRestockr = () => {
+    document.getElementById("loader_donut_restockr").classList.toggle("pswp__preloader__donut");
+}
+
+//Toggles loading icon for check invoices
+const fetchingInvoices = () => {
+    document.getElementById("loader_donut_invoices").classList.toggle("pswp__preloader__donut");
 }
 
 //Gets ids from estimates with selected parameters using getMatch()
@@ -73,9 +78,14 @@ const getProductDetailList = async (lineItemIds) => {
     return productDetailList;
 }
 
-//Checks to see if loading icon is active
-const isFetching = () => {
-    return document.getElementById("loader_donut").classList.contains('pswp__preloader__donut');
+//Checks to see if loading icon is active for restockr
+const isFetchingRestockr = () => {
+    return document.getElementById("loader_donut_restockr").classList.contains('pswp__preloader__donut');
+}
+
+//Checks to see if loading icon is active for invoices
+const isFetchingInvoices = () => {
+    return document.getElementById("loader_donut_invoices").classList.contains('pswp__preloader__donut');
 }
 
 //is the estimate between the selected dates
