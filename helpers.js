@@ -1,3 +1,20 @@
+//Checks if line items on invoice are discounted
+const checkForDiscount = async (invoiceID) => {
+    const invoice = await getInvoiceInfo(invoiceID);
+    const lineItems = invoice.line_items;
+    lineItems.forEach(async (item) => {
+        if (item.product_id){
+            const productDetail = await getProductDetail(item.product_id);
+            (productDetail != undefined && productDetail.message != 'Not found' && productDetail.product.price_retail != 0) 
+                && (productDetail.product.price_retail != item.price 
+                    && console.log('Invoice# ', invoice.number, 'DISCOUNTED: ', productDetail.product.price_retail, item.price, 'STORE: ', storeNames[invoice.location_id], 'USER: ', item.user_id));
+        }
+        item.discount_percent && console.log('Invoice# ', invoice.number, 'DISCOUNTED: ', item.discount_percent, 'STORE: ', storeNames[invoice.location_id], 'USER: ', item.user_id);
+        item.discount_dollars && console.log('Invoice# ', invoice.number, 'DISCOUNTED PRICE: ', item.discount_dollars, 'STORE: ', storeNames[invoice.location_id], 'USER: ', item.user_id);
+        item.line_discount_percent && console.log('Invoice# ', invoice.number, 'DISCOUNTED: ', item.line_discount_percent, 'STORE: ', storeNames[invoice.location_id], 'USER: ', item.user_id); 
+    });
+  };
+
 //Copies text of given element
 const copyText = (count) => {
     let range = document.createRange();
@@ -37,20 +54,42 @@ const getEstimateIDs = async (estimates) => {
     let estimatesArr = estimates.estimates;
     let lastEstimateOnPage = estimatesArr[estimatesArr.length - 1];
     
-    while (isInDate(lastEstimateOnPage) || Date.parse(lastEstimateOnPage.created_at) > dateTo ){
+    while (isEstimateInDate(lastEstimateOnPage) || Date.parse(lastEstimateOnPage.created_at) > dateTo ){
         const nextPage = await getGivenPageEstimates(count);
         estimatesArr = estimatesArr.concat(await nextPage.estimates);
         lastEstimateOnPage = await nextPage.estimates[await nextPage.estimates.length - 1];
         count++;
     }
     
-    estimatesArr.forEach(getMatch);
+    estimatesArr.forEach(getEstimateMatch);
     return estimateIDs;
 }
 
+//Gets ids from invoices with selected parameters using getMatch()
+const getInvoiceIDs = async (invoices) => {
+    let count = 2;
+    let invoicesArr = invoices.invoices;
+    let lastInvoiceOnPage = invoicesArr[invoicesArr.length - 1];
+    
+    while (isInvoiceInDate(lastInvoiceOnPage) || Date.parse(lastInvoiceOnPage.created_at) > dateTo ){
+        const nextPage = await getGivenPageInvoices(count);
+        invoicesArr = invoicesArr.concat(await nextPage.invoices);
+        lastInvoiceOnPage = await nextPage.invoices[await nextPage.invoices.length - 1];
+        count++;
+    }
+    
+    invoicesArr.forEach(getInvoiceMatch);
+    return invoiceIDs;
+}
+
 //If estimate matches selected parameters then it pushes its id to an array 
-const getMatch = (item) => {
-    (item.location_id === storeID && isInDate(item)) && estimateIDs.push(item.id);
+const getEstimateMatch = (item) => {
+    (item.location_id === storeID && isEstimateInDate(item)) && estimateIDs.push(item.id);
+}
+
+//If estimate matches selected parameters then it pushes its id to an array 
+const getInvoiceMatch = (item) => {
+    isInvoiceInDate(item) && invoiceIDs.push(item.id);
 }
 
 //Makes a list of estimate line item ids
@@ -89,9 +128,16 @@ const isFetchingInvoices = () => {
 }
 
 //is the estimate between the selected dates
-const isInDate = (estimate) => {
+const isEstimateInDate = (estimate) => {
     const estimateDate = Date.parse(estimate.created_at);
     if (estimateDate <= dateTo && estimateDate >= dateFrom) return true;
+    return false;
+}
+
+//is the invoice between the selected dates
+const isInvoiceInDate = (invoice) => {
+    const invoiceDate = Date.parse(invoice.created_at);
+    if (invoiceDate <= dateTo && invoiceDate >= dateFrom) return true;
     return false;
 }
 
@@ -100,6 +146,14 @@ const makeEstimateIdList = () => {
     return new Promise (async resolve => {
         const estimateIdList = await getPage1Estimates().then(estimates => getEstimateIDs(estimates));
         resolve(estimateIdList);
+    })
+};
+
+//Makes a list of Invoice ids
+const makeInvoiceIdList = () => {
+    return new Promise (async resolve => {
+        const invoiceIdList = await getPage1Invoices().then(invoices => getInvoiceIDs(invoices));
+        resolve(invoiceIdList);
     })
 };
   

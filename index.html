@@ -58,23 +58,10 @@
       </form>    
     </div>
 
-    <br><hr class="w3-border-grey title_underline">
+    <br><hr class="w3-border-grey title_underline"><br>
 
     <div class = "main_input_container">
       <div class = "tip_lable_dropdown_container">
-        <form onsubmit=submitCheckInvoices()>
-          <br>
-            <label class = "dropdown_label" >Choose a store:</label>
-            <select name="stores" id="stores">
-              <option value="2356">WILTON</option>
-              <option value="1605">LIFFY</option>
-              <option value="88">BLANCH</option>
-              <option value="87">SWORDS</option>
-              <option value="2355">CRESCENT</option>
-              <option value="187">DUNDRUM</option>
-            </select><br><br>
-        </form>
-    
         <div id="submit_loader_container">
           <button onClick =submitCheckInvoices()>SUBMIT</button>
           <div class="pswp__preloader__icn">
@@ -111,6 +98,7 @@
 <script>
 
 var estimateIDs = [];
+var invoiceIDs = [];
 var dateFrom = 0;
 var dateTo = 0;
 var storeID = 2356;
@@ -195,19 +183,27 @@ const submitRestocker = async () => {
     fetchingRestockr();
     const lineItemIds = await getLineItemIds();
     const productDetailList = await getProductDetailList(lineItemIds);
-
+    console.log(lineItemIds);
     productDetailList ? renderRestockr(productDetailList) : fetchingRestockr();
   }
 }
 
 const submitCheckInvoices = async () => {
   if (!isFetchingInvoices()){
+    invoiceIDs = [];
     const dateFromInput = document.getElementById("dateFromInputCheckInvoice").value;
     const dateToInput = document.getElementById("dateToInputCheckInvoice").value;
     if (setDate(dateFromInput, dateToInput) === 'ERROR: CHECK DATES') return alert('ERROR: CHECK DATES');
+    
     fetchingInvoices();
-    console.log(await getPage1Invoices());
+    
+    var invoiceIdList = await makeInvoiceIdList();
+    await invoiceIdList.forEach(await checkForDiscount);
+    /* var getAnInvoiveDetails = await getInvoiceInfo(invoiceIdList[0]);
+    console.log(getAnInvoiveDetails); */
+    fetchingInvoices();
   }
+
 };
 
 </script> 

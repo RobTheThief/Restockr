@@ -22,6 +22,28 @@ const getGivenPageEstimates = (pageNum) => {
     })
 };
 
+//Gets list of invoices from a given page 
+const getGivenPageInvoices = (pageNum) => {
+  return new Promise ( async resolve => {
+    try {
+      const response = await fetch(queryString + 'invoices?page=' + pageNum, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization':  token
+      }
+    });   
+
+    const responseJson = await response.json(); //extract JSON from the http response
+
+    resolve(responseJson); 
+      } catch (error) {
+       alert(error);
+       resolve();   
+      }
+  })
+};
+
 //Gets line items from estimate using estimate id
 const getLineItemsFromEstimate = (ID) => {
     return new Promise ( async resolve => {
@@ -41,6 +63,27 @@ const getLineItemsFromEstimate = (ID) => {
          resolve();   
         }
     })
+};
+
+//Gets invoice info using invoice id
+const getInvoiceInfo = (ID) => {
+  return new Promise ( async resolve => {
+    try {
+      const response = await fetch(queryString + 'invoices/' + ID, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization':  token
+      }
+    });   
+
+    const invoice = await response.json(); //extract JSON from the http response
+    resolve(invoice.invoice); 
+      } catch (error) {
+        alert(error);
+       resolve();   
+      }
+  })
 };
 
 //Gets 1st page of estimates and this also return the number of pages of estimates in meta
