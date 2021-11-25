@@ -7,7 +7,7 @@ const checkForDiscount = async (invoiceID) => {
             const productDetail = await getProductDetail(item.product_id);
             (productDetail != undefined && productDetail.message != 'Not found' && productDetail.product.price_retail != 0) 
                 && (productDetail.product.price_retail != item.price 
-                    && console.log('Invoice# ', invoice.number, 'DISCOUNTED: ', productDetail.product.price_retail, item.price, 'STORE: ', storeNames[invoice.location_id], 'USER: ', item.user_id));
+                    && console.log('Invoice# ', invoice.number, 'PRICE DIFFERENCE: ', ((productDetail.product.price_retail - item.price > 0) ? '-' : '+'), (productDetail.product.price_retail - item.price) * -1, 'STORE: ', storeNames[invoice.location_id], 'USER: ', item.user_id));
         }
         item.discount_percent && console.log('Invoice# ', invoice.number, 'DISCOUNTED: ', item.discount_percent, 'STORE: ', storeNames[invoice.location_id], 'USER: ', item.user_id);
         item.discount_dollars && console.log('Invoice# ', invoice.number, 'DISCOUNTED PRICE: ', item.discount_dollars, 'STORE: ', storeNames[invoice.location_id], 'USER: ', item.user_id);
